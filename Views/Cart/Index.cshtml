@@ -1,0 +1,51 @@
+@model BijouxShop.Models.Cart
+@{
+    ViewData["Title"] = "Votre panier";
+    int total = (int)(ViewBag.TotalCents ?? 0);
+}
+12
+<h1>Panier</h1>
+@if (Model.Items.Count == 0)
+{
+    <p>Votre panier est vide.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Article</th>
+                <th>Qté</th>
+                <th>Prix</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var i in Model.Items)
+            {
+                var unit = i.Product!.PriceCents + (i.Variant?.ExtraCents ?? 0);
+                <tr>
+                    <td>@i.Product!.Name @((i.Variant != null) ? $"— {i.Variant.Name}" : "")</td>
+                    <td>@i.Qty</td>
+                    <td>@String.Format(System.Globalization.CultureInfo.GetCultureInfo("fr-FR"),
+                                        "{0:C}", (unit * i.Qty) / 100.0)</td>
+                    <td>
+                        <form asp-action="Remove" method="post">
+                            <input type="hidden" name="itemId" value="@i.Id" />
+                            <button type="submit">Retirer</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <hr />
+    <div style="text-align:right;font-weight:700;">
+        Total :
+        @String.Format(System.Globalization.CultureInfo.GetCultureInfo("fr-FR"),
+        "{0:C}", total / 100.0)
+</div>
+<form asp-controller="Checkout" asp-action="Start" method="post" style="text-align:right;margin-top:12px;">
+    <button type="submit">Payer avec Stripe</button>
+</form>
+}

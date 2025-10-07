@@ -1,0 +1,27 @@
+@model BijouxShop.Models.Product
+@{
+    ViewData["Title"] = Model.Name;
+}
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+    <img src="@(Model.Images.FirstOrDefault()?.Url ?? "/img/placeholder.svg")" alt="@Model.Images.FirstOrDefault()?.Alt"
+        style="width:100%;border-radius:
+16px;" />
+    <div>
+        <h1>@Model.Name</h1>
+        <p>@Model.Description</p>
+        <p style="font-size:1.25rem;font-weight:600;">
+            @String.Format(System.Globalization.CultureInfo.GetCultureInfo("frFR"), "{0:C}", Model.PriceCents / 100.0)
+        </p>
+        <form asp-controller="Cart" asp-action="Add" method="post">
+            <input type="hidden" name="productId" value="@Model.Id" />
+            <select name="variantId">
+                <option value="">Standard</option>
+                @foreach (var v in Model.Variants)
+                {
+                    <option value="@v.Id">@v.Name</option>
+                }
+            </select>
+            <button type="submit">Ajouter au panier</button>
+        </form>
+    </div>
+</div>

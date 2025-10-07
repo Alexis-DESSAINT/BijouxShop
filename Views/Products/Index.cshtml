@@ -1,0 +1,15 @@
+@model IEnumerable<BijouxShop.Models.Product>
+@{
+ ViewData["Title"] = "Produits";
+}
+<h1>Produits</h1>
+<div class="grid" style="display:grid;grid-template-columns:repeat(autofill,minmax(220px,1fr));gap:16px;">
+@foreach (var p in Model)
+{
+    <a href="/produits/@p.Slug" class="card" style="border:1px solid#eee;padding:12px;border-radius:12px;text-decoration:none;color:inherit;">
+        <img src="@(p.Images.FirstOrDefault()?.Url ?? "/img/placeholder.svg")" alt="@p.Images.FirstOrDefault()?.Alt" style="width:100%;border-radius:10px;" />
+        <div style="margin-top:8px;font-weight:600;">@p.Name</div>
+        <div>@String.Format(System.Globalization.CultureInfo.GetCultureInfo("fr-FR"), "{0:C}", p.PriceCents/100.0)</div>
+    </a>
+}
+</div>
